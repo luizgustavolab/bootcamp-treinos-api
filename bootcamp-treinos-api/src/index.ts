@@ -6,6 +6,7 @@ import { jsonSchemaTransform, serializerCompiler, validatorCompiler, ZodTypeProv
 import z from "zod";
 import { auth } from "./lib/auth";
 import fastifyCors from "@fastify/cors";
+import fastifyApiReference from "@scalar/fastify-api-reference";
 
 const app = Fastify({  
     logger: true,
@@ -54,31 +55,41 @@ await app.register(fastifySwagger, {
     transform: jsonSchemaTransform,
 });
 
-await app.register(fastifySwaggerUI, {
-    routePrefix: '/docs',
-});
+
 
 await app.register(fastifyCors, {
     origin: ["http://localhost:3000"],
     credentials: true,
 });
 
+await app.register(fastifyApiReference, {
+    routePrefix: "/docs",
+    configuration: {
+        sources: [
+            {
+                title: "Bootcamp Treinos API",
+                slug: "bootcamp-treinos-api",
+                url: "/swagger.json",
+            },
+            {
+                title: "Auth API",
+                slug: "auth-api",
+                url: "/api/auth/open-api/generate-schema",
+            },
+            
+        ],
+    },
+});
 
 app.withTypeProvider<ZodTypeProvider>().route({
     method: "GET",
-    url: "/",
+    url: "/swagger.json",
     schema: {
-        description: "Hello, World",
-        tags: ["System"],
-        response: {
-            200: z.object({
-                message: z.string(), 
-            })
-        }
+       hide: true,
     },
-    handler: () => {
-        return { message: "Hello, World" }
-    }
+    handler: async () => {
+        return app.swagger();
+    },
 });
 
 try {  
