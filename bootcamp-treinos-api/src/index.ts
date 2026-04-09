@@ -1,12 +1,18 @@
 import "dotenv/config";
-import Fastify from "fastify";
-import fastifySwagger from '@fastify/swagger';
-import fastifySwaggerUI from '@fastify/swagger-ui';
-import { jsonSchemaTransform, serializerCompiler, validatorCompiler, ZodTypeProvider } from 'fastify-type-provider-zod';
-import z from "zod";
-import { auth } from "./lib/auth";
+
 import fastifyCors from "@fastify/cors";
+import fastifySwagger from '@fastify/swagger';
 import fastifyApiReference from "@scalar/fastify-api-reference";
+import Fastify from "fastify";
+import { 
+    jsonSchemaTransform, 
+    serializerCompiler, 
+    validatorCompiler, 
+    ZodTypeProvider 
+} from 'fastify-type-provider-zod';
+import z from "zod";
+
+import { auth } from "./lib/auth.js";
 
 const app = Fastify({  
     logger: true,
